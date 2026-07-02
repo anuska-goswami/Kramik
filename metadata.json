@@ -1,0 +1,6 @@
+{
+  "name": "Kramik",
+  "description": "India's AI-powered premium study platform featuring personalized analytics, adaptive learning roadmaps, and full syllabus mastery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

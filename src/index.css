@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F1F5F9;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --border-color: rgba(15, 23, 42, 0.06);
+  --border-color-hover: rgba(15, 23, 42, 0.12);
+  --item-hover: rgba(15, 23, 42, 0.04);
+  --glow-color: rgba(181, 255, 69, 0.1);
+  --scroll-thumb: rgba(15, 23, 42, 0.15);
+  --scroll-thumb-hover: rgba(15, 23, 42, 0.25);
+  --accent-color: #71b319;
+  --shadow-color: rgba(15, 23, 42, 0.04);
+  --card-border: rgba(15, 23, 42, 0.05);
+}
+
+:root.dark {
+  --bg-primary: #05080D;
+  --bg-secondary: #0A0E17;
+  --bg-tertiary: #111827;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --border-color-hover: rgba(255, 255, 255, 0.1);
+  --item-hover: rgba(255, 255, 255, 0.03);
+  --glow-color: rgba(181, 255, 69, 0.03);
+  --scroll-thumb: rgba(255, 255, 255, 0.1);
+  --scroll-thumb-hover: rgba(255, 255, 255, 0.2);
+  --accent-color: #B5FF45;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --card-border: rgba(255, 255, 255, 0.05);
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --color-lime: #B5FF45;
+  --color-lime-dark: #8ccf32;
+  
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border-custom: var(--border-color);
+  --color-border-hover: var(--border-color-hover);
+  --color-item-hover: var(--item-hover);
+  --color-accent-custom: var(--accent-color);
+  --color-card-border: var(--card-border);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+
+/* Theme Overrides for Light Mode (when .dark class is NOT present) */
+:root:not(.dark) {
+  color-scheme: light;
+}
+
+/* Smooth theme transition globally */
+body, header, aside, main, div, button, p, span, h1, h2, h3, h4, h5, h6, select, input, a {
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), 
+              color 300ms cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:root:not(.dark) .bg-\[\#05080D\] {
+  background-color: var(--bg-primary) !important;
+}
+:root:not(.dark) .bg-\[\#05080D\]\/70 {
+  background-color: rgba(248, 250, 252, 0.7) !important;
+}
+:root:not(.dark) .bg-\[\#05080D\]\/80 {
+  background-color: rgba(248, 250, 252, 0.8) !important;
+}
+:root:not(.dark) .bg-\[\#05080D\]\/85 {
+  background-color: rgba(248, 250, 252, 0.85) !important;
+}
+:root:not(.dark) .bg-\[\#05080D\]\/50 {
+  background-color: rgba(248, 250, 252, 0.5) !important;
+}
+
+:root:not(.dark) .bg-\[\#0A0E17\] {
+  background-color: var(--bg-secondary) !important;
+}
+:root:not(.dark) .bg-\[\#0A0E17\]\/80 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+}
+:root:not(.dark) .bg-\[\#0A0E17\]\/60 {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+:root:not(.dark) .bg-\[\#0A0E17\]\/90 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+:root:not(.dark) .bg-\[\#0A0E17\]\/95 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+:root:not(.dark) .text-white:not(button):not(.keep-white) {
+  color: var(--text-primary) !important;
+}
+:root:not(.dark) .text-gray-200 {
+  color: var(--text-primary) !important;
+}
+:root:not(.dark) .text-gray-300 {
+  color: var(--text-secondary) !important;
+}
+:root:not(.dark) .text-gray-400 {
+  color: var(--text-secondary) !important;
+}
+:root:not(.dark) .text-gray-500 {
+  color: var(--text-secondary) !important;
+}
+:root:not(.dark) .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+:root:not(.dark) .border-white\/5 {
+  border-color: var(--border-color) !important;
+}
+:root:not(.dark) .border-white\/10 {
+  border-color: var(--border-color-hover) !important;
+}
+:root:not(.dark) .border-white\/\[0\.06\] {
+  border-color: var(--border-color) !important;
+}
+:root:not(.dark) .border-white\/\[0\.08\] {
+  border-color: var(--border-color-hover) !important;
+}
+
+:root:not(.dark) .bg-white\/5 {
+  background-color: var(--item-hover) !important;
+}
+:root:not(.dark) .bg-white\/10 {
+  background-color: rgba(15, 23, 42, 0.08) !important;
+}
+:root:not(.dark) .bg-white\/\[0\.02\] {
+  background-color: var(--item-hover) !important;
+}
+:root:not(.dark) .bg-white\/\[0\.03\] {
+  background-color: var(--item-hover) !important;
+}
+:root:not(.dark) .bg-white\/\[0\.05\] {
+  background-color: var(--item-hover) !important;
+}
+:root:not(.dark) .bg-white\/\[0\.035\] {
+  background-color: var(--item-hover) !important;
+}
+:root:not(.dark) .bg-white\/\[0\.025\] {
+  background-color: var(--item-hover) !important;
+}
+:root:not(.dark) .bg-white\/\[0\.015\] {
+  background-color: var(--item-hover) !important;
+}
+
+:root:not(.dark) .bg-\[\#0B101A\] {
+  background-color: var(--bg-secondary) !important;
+}
+:root:not(.dark) .bg-\[\#0B101A\]\/80 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+}
+:root:not(.dark) .bg-\[\#121822\]\/90 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+:root:not(.dark) .bg-white\/\[0\.01\] {
+  background-color: var(--item-hover) !important;
+}
+
+
