@@ -13,6 +13,7 @@ import { SubjectDetailPage } from './SubjectDetailPage';
 import { MockTestsContent } from './MockTestsContent';
 import { MockTestResultPage } from './MockTestResultPage';
 import { AIMentorChat } from './AIMentorChat';
+import { SettingsContent } from './SettingsContent';
 
 interface DashboardLayoutProps {
   onSignOut: () => void;
@@ -95,12 +96,17 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
                 onClick={() => {
                   if (item.onClick) {
                     item.onClick();
-                  } else if (item.id === 'dashboard') {
-                    navigate('/dashboard');
-                  } else if (item.id === 'subjects') {
-                    navigate('/subjects');
                   } else {
                     setActiveTab(item.id);
+                    if (item.id === 'dashboard') {
+                      navigate('/dashboard');
+                    } else if (item.id === 'subjects') {
+                      navigate('/subjects');
+                    } else if (item.id === 'settings') {
+                      navigate('/settings');
+                    } else if (item.id === 'mock-tests') {
+                      navigate('/mock-tests');
+                    }
                     if (item.id === 'ai-mentor') setIsAIMentorOpen(true);
                     if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
                   }
@@ -132,28 +138,54 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
           <div className="space-y-3">
             <h4 className="text-[10px] font-bold text-text-secondary/80 uppercase tracking-wider px-1">Continue Learning</h4>
             <div className="grid grid-cols-2 gap-2">
-              <button className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group">
+              <button 
+                onClick={() => {
+                  setActiveTab('aptitude');
+                  if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
+                }}
+                className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer"
+              >
                 <Brain className="w-4 h-4 text-text-secondary group-hover:text-orange-400 transition-colors" />
                 <div className="text-center">
                   <div className="text-[10px] font-semibold text-text-primary leading-tight">Aptitude</div>
                   <div className="text-[8px] text-text-secondary/70">Practice</div>
                 </div>
               </button>
-              <button className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group">
+              <button 
+                onClick={() => {
+                  setActiveTab('mock-tests');
+                  navigate('/mock-tests');
+                  if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
+                }}
+                className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer"
+              >
                 <FileEdit className="w-4 h-4 text-text-secondary group-hover:text-blue-400 transition-colors" />
                 <div className="text-center">
                   <div className="text-[10px] font-semibold text-text-primary leading-tight">Mock Test</div>
                   <div className="text-[8px] text-text-secondary/70">Attempt</div>
                 </div>
               </button>
-              <button className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group">
+              <button 
+                onClick={() => {
+                  setActiveTab('subjects');
+                  navigate('/subjects');
+                  if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
+                }}
+                className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer"
+              >
                 <Briefcase className="w-4 h-4 text-text-secondary group-hover:text-[#B5FF45] transition-colors" />
                 <div className="text-center">
                   <div className="text-[10px] font-semibold text-text-primary leading-tight">Company</div>
                   <div className="text-[8px] text-text-secondary/70">Prepare</div>
                 </div>
               </button>
-              <button className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group">
+              <button 
+                onClick={() => {
+                  setActiveTab('roadmap');
+                  if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
+                }}
+                className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer"
+              >
                 <Map className="w-4 h-4 text-text-secondary group-hover:text-purple-400 transition-colors" />
                 <div className="text-center">
                   <div className="text-[10px] font-semibold text-text-primary leading-tight">Roadmap</div>
@@ -227,6 +259,8 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
             <MockTestsContent onShowResult={() => setActiveTab('mock-test-result')} />
           ) : activeTab === 'mock-test-result' ? (
             <MockTestResultPage />
+          ) : activeTab === 'settings' ? (
+            <SettingsContent onSignOut={onSignOut} />
           ) : (
             <DashboardContent />
           )}

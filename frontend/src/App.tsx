@@ -143,12 +143,12 @@ function AppRoutes() {
             </ProtectedRoute>
           } />
 
-          <Route path="/mock-test-result" element={
+          <Route path="/settings" element={
             <ProtectedRoute>
               <DashboardLayout 
                 onSignOut={handleSignOut}
                 onNavigateToProfile={() => navigate('/profile')}
-                initialTab="mock-test-result"
+                initialTab="settings"
               />
             </ProtectedRoute>
           } />
