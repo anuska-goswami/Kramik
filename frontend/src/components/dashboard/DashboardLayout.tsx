@@ -14,6 +14,12 @@ import { MockTestsContent } from './MockTestsContent';
 import { MockTestResultPage } from './MockTestResultPage';
 import { AIMentorChat } from './AIMentorChat';
 import { SettingsContent } from './SettingsContent';
+import { AptitudeContent } from './AptitudeContent';
+import { CompanyPrepContent } from './CompanyPrepContent';
+import { CompanyDetailPage } from './CompanyDetailPage';
+import { InterviewPrepContent } from './InterviewPrepContent';
+import { InterviewDetailPage } from './InterviewDetailPage';
+import { ResumeBuilderContent } from './resume/ResumeBuilderContent';
 
 interface DashboardLayoutProps {
   onSignOut: () => void;
@@ -38,8 +44,12 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
     { id: 'subjects', label: 'Core Subjects', icon: BookOpen },
     { id: 'aptitude', label: 'Aptitude', icon: Brain },
     { id: 'mock-tests', label: 'Mock Tests', icon: FileEdit },
-    { id: 'roadmap', label: 'Roadmap', icon: Map },
+    { id: 'company-prep', label: 'Company Prep', icon: Briefcase },
+    { id: 'interview-prep', label: 'Interview Prep', icon: MessageSquare },
+    { id: 'resume-builder', label: 'Resume Builder', icon: FileText },
     { id: 'performance', label: 'Performance', icon: BarChart3 },
+    { id: 'roadmap', label: 'Roadmap', icon: Map },
+    { id: 'ai-mentor', label: 'AI Mentor', icon: Sparkles },
     { id: 'bookmarks', label: 'Bookmarks', icon: Bookmark },
     { id: 'profile', label: 'Profile', icon: User, onClick: onNavigateToProfile },
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -89,7 +99,9 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
           {navItems.map((item) => {
             const isActive = activeTab === item.id ||
               (item.id === 'subjects' && activeTab === 'subject-detail') ||
-              (item.id === 'mock-tests' && activeTab === 'mock-test-result');
+              (item.id === 'mock-tests' && activeTab === 'mock-test-result') ||
+              (item.id === 'company-prep' && activeTab === 'company-detail') ||
+              (item.id === 'interview-prep' && activeTab === 'interview-detail');
             return (
               <button
                 key={item.id}
@@ -106,6 +118,20 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
                       navigate('/settings');
                     } else if (item.id === 'mock-tests') {
                       navigate('/mock-tests');
+                    } else if (item.id === 'aptitude') {
+                      navigate('/aptitude');
+                    } else if (item.id === 'roadmap') {
+                      navigate('/roadmap');
+                    } else if (item.id === 'performance') {
+                      navigate('/performance');
+                    } else if (item.id === 'bookmarks') {
+                      navigate('/bookmarks');
+                    } else if (item.id === 'company-prep') {
+                      navigate('/company-prep');
+                    } else if (item.id === 'interview-prep') {
+                      navigate('/interview-prep');
+                    } else if (item.id === 'resume-builder') {
+                      navigate('/resume-builder');
                     }
                     if (item.id === 'ai-mentor') setIsAIMentorOpen(true);
                     if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
@@ -141,6 +167,7 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
               <button 
                 onClick={() => {
                   setActiveTab('aptitude');
+                  navigate('/aptitude');
                   if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
                 }}
                 className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer"
@@ -253,6 +280,8 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
         <main className="flex-1 overflow-y-auto custom-scrollbar">
           {activeTab === 'subjects' ? (
             <SubjectsContent />
+          ) : activeTab === 'aptitude' ? (
+            <AptitudeContent />
           ) : activeTab === 'subject-detail' ? (
             <SubjectDetailPage />
           ) : activeTab === 'mock-tests' ? (
@@ -261,6 +290,16 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
             <MockTestResultPage />
           ) : activeTab === 'settings' ? (
             <SettingsContent onSignOut={onSignOut} />
+          ) : activeTab === 'company-prep' ? (
+            <CompanyPrepContent onCompanySelect={() => setActiveTab('company-detail')} />
+          ) : activeTab === 'company-detail' ? (
+            <CompanyDetailPage onBack={() => setActiveTab('company-prep')} />
+          ) : activeTab === 'interview-prep' ? (
+            <InterviewPrepContent onCategorySelect={() => setActiveTab('interview-detail')} />
+          ) : activeTab === 'interview-detail' ? (
+            <InterviewDetailPage onBack={() => setActiveTab('interview-prep')} />
+          ) : activeTab === 'resume-builder' ? (
+            <ResumeBuilderContent />
           ) : (
             <DashboardContent />
           )}
