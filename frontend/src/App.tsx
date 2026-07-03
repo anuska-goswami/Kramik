@@ -113,6 +113,8 @@ function AppRoutes() {
             </ProtectedRoute>
           } />
 
+          <Route path="/subjects/aptitude" element={<Navigate to="/aptitude" replace />} />
+
           <Route path="/subjects/:id" element={
             <ProtectedRoute>
               <DashboardLayout 
@@ -149,6 +151,96 @@ function AppRoutes() {
                 onSignOut={handleSignOut}
                 onNavigateToProfile={() => navigate('/profile')}
                 initialTab="settings"
+              />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/aptitude" element={
+            <ProtectedRoute>
+              <DashboardLayout 
+                onSignOut={handleSignOut}
+                onNavigateToProfile={() => navigate('/profile')}
+                initialTab="aptitude"
+              />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/roadmap" element={
+            <ProtectedRoute>
+              <DashboardLayout 
+                onSignOut={handleSignOut}
+                onNavigateToProfile={() => navigate('/profile')}
+                initialTab="roadmap"
+              />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/performance" element={
+            <ProtectedRoute>
+              <DashboardLayout 
+                onSignOut={handleSignOut}
+                onNavigateToProfile={() => navigate('/profile')}
+                initialTab="performance"
+              />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/bookmarks" element={
+            <ProtectedRoute>
+              <DashboardLayout 
+                onSignOut={handleSignOut}
+                onNavigateToProfile={() => navigate('/profile')}
+                initialTab="bookmarks"
+              />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/company-prep" element={
+            <ProtectedRoute>
+              <DashboardLayout 
+                onSignOut={handleSignOut}
+                onNavigateToProfile={() => navigate('/profile')}
+                initialTab="company-prep"
+              />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/company-prep/:id" element={
+            <ProtectedRoute>
+              <DashboardLayout 
+                onSignOut={handleSignOut}
+                onNavigateToProfile={() => navigate('/profile')}
+                initialTab="company-detail"
+              />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/interview-prep" element={
+            <ProtectedRoute>
+              <DashboardLayout 
+                onSignOut={handleSignOut}
+                onNavigateToProfile={() => navigate('/profile')}
+                initialTab="interview-prep"
+              />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/interview-prep/:id" element={
+            <ProtectedRoute>
+              <DashboardLayout 
+                onSignOut={handleSignOut}
+                onNavigateToProfile={() => navigate('/profile')}
+                initialTab="interview-detail"
+              />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/resume-builder" element={
+            <ProtectedRoute>
+              <DashboardLayout 
+                onSignOut={handleSignOut}
+                onNavigateToProfile={() => navigate('/profile')}
+                initialTab="resume-builder"
               />
             </ProtectedRoute>
           } />
