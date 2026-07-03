@@ -20,6 +20,7 @@ import { CompanyDetailPage } from './CompanyDetailPage';
 import { InterviewPrepContent } from './InterviewPrepContent';
 import { InterviewDetailPage } from './InterviewDetailPage';
 import { ResumeBuilderContent } from './resume/ResumeBuilderContent';
+import { RoadmapContent } from './roadmap/RoadmapContent';
 
 interface DashboardLayoutProps {
   onSignOut: () => void;
@@ -47,11 +48,6 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
     { id: 'company-prep', label: 'Company Prep', icon: Briefcase },
     { id: 'interview-prep', label: 'Interview Prep', icon: MessageSquare },
     { id: 'resume-builder', label: 'Resume Builder', icon: FileText },
-    { id: 'performance', label: 'Performance', icon: BarChart3 },
-    { id: 'roadmap', label: 'Roadmap', icon: Map },
-    { id: 'ai-mentor', label: 'AI Mentor', icon: Sparkles },
-    { id: 'bookmarks', label: 'Bookmarks', icon: Bookmark },
-    { id: 'profile', label: 'Profile', icon: User, onClick: onNavigateToProfile },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
@@ -106,36 +102,25 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
               <button
                 key={item.id}
                 onClick={() => {
-                  if (item.onClick) {
-                    item.onClick();
-                  } else {
-                    setActiveTab(item.id);
-                    if (item.id === 'dashboard') {
-                      navigate('/dashboard');
-                    } else if (item.id === 'subjects') {
-                      navigate('/subjects');
-                    } else if (item.id === 'settings') {
-                      navigate('/settings');
-                    } else if (item.id === 'mock-tests') {
-                      navigate('/mock-tests');
-                    } else if (item.id === 'aptitude') {
-                      navigate('/aptitude');
-                    } else if (item.id === 'roadmap') {
-                      navigate('/roadmap');
-                    } else if (item.id === 'performance') {
-                      navigate('/performance');
-                    } else if (item.id === 'bookmarks') {
-                      navigate('/bookmarks');
-                    } else if (item.id === 'company-prep') {
-                      navigate('/company-prep');
-                    } else if (item.id === 'interview-prep') {
-                      navigate('/interview-prep');
-                    } else if (item.id === 'resume-builder') {
-                      navigate('/resume-builder');
-                    }
-                    if (item.id === 'ai-mentor') setIsAIMentorOpen(true);
-                    if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
+                  setActiveTab(item.id);
+                  if (item.id === 'dashboard') {
+                    navigate('/dashboard');
+                  } else if (item.id === 'subjects') {
+                    navigate('/subjects');
+                  } else if (item.id === 'settings') {
+                    navigate('/settings');
+                  } else if (item.id === 'mock-tests') {
+                    navigate('/mock-tests');
+                  } else if (item.id === 'aptitude') {
+                    navigate('/aptitude');
+                  } else if (item.id === 'company-prep') {
+                    navigate('/company-prep');
+                  } else if (item.id === 'interview-prep') {
+                    navigate('/interview-prep');
+                  } else if (item.id === 'resume-builder') {
+                    navigate('/resume-builder');
                   }
+                  if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
                 }}
                 className={`flex items-center gap-3 rounded-xl transition-all duration-300 relative group px-4 py-3
                   ${isActive
@@ -194,8 +179,8 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
               </button>
               <button 
                 onClick={() => {
-                  setActiveTab('subjects');
-                  navigate('/subjects');
+                  setActiveTab('company-prep');
+                  navigate('/company-prep');
                   if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
                 }}
                 className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer"
@@ -208,15 +193,16 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
               </button>
               <button 
                 onClick={() => {
-                  setActiveTab('roadmap');
+                  setActiveTab('subjects');
+                  navigate('/subjects');
                   if (window.innerWidth < 1024) setIsMobileSidebarOpen(false);
                 }}
                 className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-item-hover border border-border-custom hover:bg-bg-primary hover:border-border-hover transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer"
               >
-                <Map className="w-4 h-4 text-text-secondary group-hover:text-purple-400 transition-colors" />
+                <BookOpen className="w-4 h-4 text-text-secondary group-hover:text-purple-400 transition-colors" />
                 <div className="text-center">
-                  <div className="text-[10px] font-semibold text-text-primary leading-tight">Roadmap</div>
-                  <div className="text-[8px] text-text-secondary/70">Resume</div>
+                  <div className="text-[10px] font-semibold text-text-primary leading-tight">Subjects</div>
+                  <div className="text-[8px] text-text-secondary/70">Study</div>
                 </div>
               </button>
             </div>
@@ -300,6 +286,8 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = '
             <InterviewDetailPage onBack={() => setActiveTab('interview-prep')} />
           ) : activeTab === 'resume-builder' ? (
             <ResumeBuilderContent />
+          ) : activeTab === 'roadmap' ? (
+            <RoadmapContent />
           ) : (
             <DashboardContent />
           )}
