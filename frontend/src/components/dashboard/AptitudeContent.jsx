@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useNavigate } from "react-router-dom";
 import {
   Brain,
   Target,
@@ -11,23 +12,35 @@ import {
   Lock,
   Star,
   Calculator,
-  Award,
-  Cpu,
-  FileText,
-  FileBarChart,
   PieChart,
   Zap,
-  Bookmark,
-  Sparkles
+  ChevronRight,
+  ArrowLeft,
+  ArrowRight,
+  Search,
+  Filter,
+  AlertCircle,
+  Award,
+  Check
 } from "lucide-react";
+
 export function AptitudeContent() {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState(null);
+
+  // Scroll page to top when entering a category detail view
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [activeCategory]);
+
+  // Overall statistics for the header
   const stats = [
     { label: "Overall Progress", value: "45%", icon: TrendingUp, color: "text-[#B5FF45]" },
-    { label: "Questions Attempted", value: "1,248", icon: Target, color: "text-blue-400" },
-    { label: "Accuracy", value: "82%", icon: CheckCircle2, color: "text-green-400" },
-    { label: "Mock Tests", value: "12", icon: FileText, color: "text-purple-400" }
+    { label: "Questions Solved", value: "1,248", icon: Target, color: "text-blue-400" },
+    { label: "Accuracy", value: "82%", icon: CheckCircle2, color: "text-green-400" }
   ];
+
+  // Exactly six categories to form a perfectly balanced 3-col layout on desktop
   const categories = [
     {
       id: "quantitative",
@@ -126,23 +139,6 @@ export function AptitudeContent() {
       ]
     },
     {
-      id: "sufficiency",
-      title: "Data Sufficiency",
-      description: "Determine if the provided statement is sufficient to solve problems.",
-      progress: 0,
-      topicsCompleted: "0/5",
-      timeEstimation: "15h",
-      icon: Award,
-      color: "text-emerald-400",
-      topics: [
-        { name: "Number Theory Sufficiency", difficulty: "Medium", questions: 60, progress: 0, time: "3h", status: "Not Started" },
-        { name: "Algebraic Relations", difficulty: "Medium", questions: 50, progress: 0, time: "2.5h", status: "Locked" },
-        { name: "Arithmetic Sufficiency", difficulty: "Easy", questions: 70, progress: 0, time: "2h", status: "Locked" },
-        { name: "Geometric Sufficiency", difficulty: "Hard", questions: 45, progress: 0, time: "3h", status: "Locked" },
-        { name: "Logical Sufficiency", difficulty: "Hard", questions: 55, progress: 0, time: "3.5h", status: "Locked" }
-      ]
-    },
-    {
       id: "puzzle",
       title: "Puzzle Solving",
       description: "Solve brain teasers, floor puzzles, and grid configurations.",
@@ -157,23 +153,6 @@ export function AptitudeContent() {
         { name: "Grid-Based Puzzles", difficulty: "Hard", questions: 70, progress: 0, time: "4h", status: "Locked" },
         { name: "Linear & Circular Arrangements", difficulty: "Medium", questions: 80, progress: 0, time: "3.5h", status: "Locked" },
         { name: "Box Puzzles", difficulty: "Medium", questions: 40, progress: 0, time: "2.5h", status: "Locked" }
-      ]
-    },
-    {
-      id: "analytical",
-      title: "Analytical Reasoning",
-      description: "Assess courses of action, assertions, and logical arguments.",
-      progress: 0,
-      topicsCompleted: "0/5",
-      timeEstimation: "12h",
-      icon: Cpu,
-      color: "text-red-400",
-      topics: [
-        { name: "Decision Making", difficulty: "Medium", questions: 50, progress: 0, time: "2.5h", status: "Not Started" },
-        { name: "Course of Action", difficulty: "Easy", questions: 40, progress: 0, time: "2h", status: "Locked" },
-        { name: "Strengths of Arguments", difficulty: "Medium", questions: 60, progress: 0, time: "2.5h", status: "Locked" },
-        { name: "Assertion and Reason", difficulty: "Easy", questions: 50, progress: 0, time: "2h", status: "Locked" },
-        { name: "Logical Deductions", difficulty: "Hard", questions: 55, progress: 0, time: "3h", status: "Locked" }
       ]
     },
     {
@@ -194,382 +173,523 @@ export function AptitudeContent() {
       ]
     }
   ];
-  return <div className="p-6 lg:p-8 space-y-8 pb-24">
-      {
-    /* Header */
+
+  // Exactly 3 featured Practice Sets
+  const featuredPracticeSets = [
+    { name: "Percentage Practice Set 1", questions: 30, duration: "45 mins", difficulty: "Easy", completed: true },
+    { name: "Profit & Loss Challenge", questions: 25, duration: "40 mins", difficulty: "Medium", completed: false },
+    { name: "Logical Puzzle Set", questions: 15, duration: "30 mins", difficulty: "Hard", completed: false }
+  ];
+
+  // Exactly 3 featured Mock Tests
+  const featuredMockTests = [
+    { title: "TCS NQT Mock 1", type: "Company", duration: "90 mins", questions: 60, difficulty: "Medium" },
+    { title: "Quant Sectional", type: "Sectional", duration: "45 mins", questions: 30, difficulty: "Easy" },
+    { title: "Full Aptitude Test", type: "Comprehensive", duration: "120 mins", questions: 100, difficulty: "Hard" }
+  ];
+
+  // Animations config
+  const pageVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.08 } }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } }
+  };
+
+  if (activeCategory) {
+    return (
+      <div className="p-4 md:p-8 max-w-7xl mx-auto pb-24 text-white">
+        <CategoryLearningPage
+          category={activeCategory}
+          onBack={() => setActiveCategory(null)}
+        />
+      </div>
+    );
   }
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-text-primary">Aptitude Preparation</h1>
-          <p className="text-text-secondary max-w-2xl">
-            Master Quantitative Aptitude, Logical Reasoning, and Verbal Ability through structured learning, AI guidance, and mock assessments.
+
+  return (
+    <motion.div
+      variants={pageVariants}
+      initial="hidden"
+      animate="visible"
+      className="p-4 md:p-8 max-w-7xl mx-auto space-y-12 pb-24 text-white"
+    >
+      {/* 1. Header Section */}
+      <motion.div
+        variants={itemVariants}
+        className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-[#1E293B]/30 border border-white/[0.08] p-6 md:p-8 rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.2)] backdrop-blur-md relative overflow-hidden"
+      >
+        {/* Decorative lime glow */}
+        <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#B5FF45]/[0.05] rounded-full blur-[90px] pointer-events-none" />
+
+        <div className="space-y-3 max-w-2xl relative z-10">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white font-heading">
+            Aptitude Preparation
+          </h1>
+          <p className="text-gray-300 text-sm md:text-base font-light leading-relaxed">
+            Master Quantitative Aptitude, Logical Reasoning, Verbal Ability, and other placement aptitude topics through structured learning and practice.
           </p>
         </div>
-        <button className="flex items-center gap-2 px-6 py-3 bg-[#B5FF45] text-[#05080D] rounded-xl font-semibold hover:bg-[#a0e63b] transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(181,255,69,0.3)] whitespace-nowrap">
-          <PlayCircle className="w-5 h-5" />
-          Continue Learning
-        </button>
-      </div>
 
-      {
-    /* Stats */
-  }
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => <motion.div
-    key={stat.label}
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: index * 0.1 }}
-    className="p-5 rounded-2xl bg-white/[0.02] border border-border-custom hover:border-border-hover transition-colors group relative overflow-hidden"
-  >
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="flex items-center gap-4 relative z-10">
-              <div className="p-3 rounded-xl bg-item-hover">
-                <stat.icon className={`w-6 h-6 ${stat.color}`} />
-              </div>
-              <div>
-                <div className="text-sm text-text-secondary">{stat.label}</div>
-                <div className="text-2xl font-bold text-text-primary mt-0.5">{stat.value}</div>
-              </div>
-            </div>
-          </motion.div>)}
-      </div>
-
-      {
-    /* Categories */
-  }
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-          <Target className="w-5 h-5 text-[#B5FF45]" />
-          Aptitude Categories
-        </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {categories.map((category, index) => <motion.div
-    key={category.id}
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: index * 0.1 }}
-    className={`rounded-2xl border transition-all duration-300 overflow-hidden ${activeCategory === category.id ? "bg-white/[0.02] border-[#B5FF45]/50 shadow-[0_0_30px_rgba(181,255,69,0.1)]" : "bg-white/[0.02] border-border-custom hover:border-border-hover hover:-translate-y-1"}`}
-  >
+        {/* Header Statistics Grid (Only 3 Compact Cards) */}
+        <div className="grid grid-cols-3 gap-3 md:gap-4 w-full lg:w-auto shrink-0 relative z-10">
+          {stats.map((stat) => {
+            const Icon = stat.icon;
+            return (
               <div
-    className="p-6 cursor-pointer relative"
-    onClick={() => setActiveCategory(activeCategory === category.id ? null : category.id)}
-  >
-                {
-    /* Subtle gradient overlay on active */
-  }
-                {activeCategory === category.id && <div className="absolute inset-0 bg-gradient-to-r from-[#B5FF45]/5 to-transparent pointer-events-none" />}
-                
-                <div className="flex items-start justify-between gap-4 relative z-10">
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-xl bg-item-hover shrink-0">
-                      <category.icon className={`w-6 h-6 ${category.color}`} />
+                key={stat.label}
+                className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-3 md:p-4 text-center flex flex-col items-center justify-center min-w-[90px] md:min-w-[120px] shadow-sm"
+              >
+                <div className="p-2 rounded-xl bg-white/5 mb-2">
+                  <Icon className={`w-4 h-4 md:w-5 md:h-5 ${stat.color}`} />
+                </div>
+                <span className="text-[10px] text-gray-400 font-medium block leading-tight">
+                  {stat.label}
+                </span>
+                <span className="text-sm md:text-lg font-bold text-white mt-1 font-mono">
+                  {stat.value}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* 2. Aptitude Categories Section */}
+      <motion.div variants={itemVariants} className="space-y-5">
+        <div>
+          <h2 className="text-xl md:text-2xl font-semibold text-white tracking-tight font-heading flex items-center gap-2">
+            <Target className="w-5 h-5 text-[#B5FF45]" />
+            Aptitude Categories
+          </h2>
+          <p className="text-xs text-gray-400 mt-1">
+            Pick a structured pathway to start preparing and mastering concepts.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map((category) => {
+            const Icon = category.icon;
+            return (
+              <motion.div
+                key={category.id}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                onClick={() => setActiveCategory(category)}
+                className="bg-[#1E293B]/45 border border-white/[0.08] rounded-2xl p-5 shadow-[0_8px_30px_rgba(0,0,0,0.15)] hover:border-white/15 hover:bg-[#1E293B]/60 transition-all duration-300 flex flex-col justify-between group cursor-pointer"
+              >
+                <div>
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-2.5 rounded-xl bg-white/5 text-gray-300 group-hover:text-[#B5FF45] group-hover:bg-[#B5FF45]/10 transition-all duration-300">
+                      <Icon className={`w-5 h-5 ${category.color}`} />
                     </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-text-primary mb-1">{category.title}</h3>
-                      <p className="text-sm text-text-secondary line-clamp-1">{category.description}</p>
-                      
-                      <div className="flex items-center gap-4 mt-4">
-                        <div className="flex items-center gap-1.5 text-xs text-text-secondary">
-                          <BookOpen className="w-4 h-4 text-[#B5FF45]" />
-                          <span>{category.topicsCompleted} Topics</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-xs text-text-secondary">
-                          <Clock className="w-4 h-4 text-blue-400" />
-                          <span>{category.timeEstimation}</span>
-                        </div>
-                      </div>
-                    </div>
+                    <span className="text-[10px] font-mono text-gray-300 bg-white/[0.02] border border-white/[0.08] px-2.5 py-1 rounded-md">
+                      {category.topicsCompleted} Topics
+                    </span>
                   </div>
-                  
-                  <div className="text-right shrink-0">
-                    <div className="text-2xl font-bold text-text-primary">{category.progress}%</div>
-                    <div className="text-xs text-text-secondary">Completed</div>
-                  </div>
+
+                  <h3 className="font-semibold text-white group-hover:text-[#B5FF45] transition-colors duration-300 mb-2 text-base">
+                    {category.title}
+                  </h3>
+                  <p className="text-xs text-gray-400 font-light line-clamp-2 leading-relaxed mb-5">
+                    {category.description}
+                  </p>
                 </div>
 
-                <div className="mt-6 h-1.5 bg-item-hover rounded-full overflow-hidden">
-                  <motion.div
-    initial={{ width: 0 }}
-    animate={{ width: `${category.progress}%` }}
-    transition={{ duration: 1, delay: 0.2 }}
-    className="h-full bg-[#B5FF45] rounded-full"
-  />
+                <div className="space-y-4">
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-[10px] font-mono text-gray-400">
+                      <span>Mastery Completion</span>
+                      <span className="font-bold text-white">{category.progress}%</span>
+                    </div>
+                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-[#B5FF45] to-[#80E600] rounded-full"
+                        style={{ width: `${category.progress}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveCategory(category);
+                    }}
+                    className="w-full py-2 bg-white/5 group-hover:bg-[#B5FF45] group-hover:text-[#05080D] text-white text-xs font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-1 cursor-pointer"
+                  >
+                    <span>Continue Study</span>
+                    <ChevronRight className="w-3.5 h-3.5 shrink-0" />
+                  </button>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* 3. Recommended Practice Sets Section */}
+      <motion.div variants={itemVariants} className="space-y-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl md:text-2xl font-semibold text-white tracking-tight font-heading flex items-center gap-2">
+              <Zap className="w-5 h-5 text-yellow-400" />
+              Recommended Practice Sets
+            </h2>
+            <p className="text-xs text-gray-400 mt-1">
+              Curated sectional questions recommended specifically for you next.
+            </p>
+          </div>
+        </div>
+
+        {/* Exactly 3 Cards in Responsive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredPracticeSets.map((set, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ y: -4 }}
+              className="p-5 rounded-2xl bg-[#1E293B]/45 border border-white/[0.08] hover:border-white/15 transition-all duration-300 flex flex-col justify-between group"
+            >
+              <div>
+                <div className="flex justify-between items-start mb-4">
+                  <div className="p-2 bg-white/5 text-gray-400 group-hover:text-yellow-400 transition-colors rounded-xl">
+                    <Target className="w-4.5 h-4.5" />
+                  </div>
+                  <span
+                    className={`text-[10px] uppercase font-bold font-mono tracking-wider px-2.5 py-0.5 rounded-full ${
+                      set.difficulty === "Easy"
+                        ? "bg-emerald-500/10 text-emerald-400"
+                        : set.difficulty === "Medium"
+                        ? "bg-yellow-500/10 text-yellow-400"
+                        : "bg-red-500/10 text-red-400"
+                    }`}
+                  >
+                    {set.difficulty}
+                  </span>
+                </div>
+
+                <h3 className="font-semibold text-white mb-2 text-sm md:text-base leading-snug group-hover:text-[#B5FF45] transition-colors">
+                  {set.name}
+                </h3>
+                <div className="flex items-center gap-3 text-xs text-gray-400 font-mono mb-6">
+                  <span>{set.questions} Questions</span>
+                  <span>•</span>
+                  <span>{set.duration}</span>
                 </div>
               </div>
 
-              {
-    /* Expandable Topics List */
-  }
-              <AnimatePresence>
-                {activeCategory === category.id && <motion.div
-    initial={{ height: 0, opacity: 0 }}
-    animate={{ height: "auto", opacity: 1 }}
-    exit={{ height: 0, opacity: 0 }}
-    className="border-t border-border-custom bg-bg-primary/50"
-  >
-                    <div className="p-4 space-y-2">
-                      {category.topics.map((topic, i) => <div
-    key={topic.name}
-    className="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-border-custom hover:border-[#B5FF45]/30 transition-all group"
-  >
-                          <div className="flex items-center gap-4">
-                            <div className={`p-2 rounded-lg ${topic.status === "Completed" ? "bg-[#B5FF45]/10 text-[#B5FF45]" : topic.status === "In Progress" ? "bg-blue-400/10 text-blue-400" : topic.status === "Locked" ? "bg-item-hover text-text-secondary" : "bg-item-hover text-text-primary"}`}>
-                              {topic.status === "Completed" ? <CheckCircle2 className="w-4 h-4" /> : topic.status === "Locked" ? <Lock className="w-4 h-4" /> : <PlayCircle className="w-4 h-4" />}
-                            </div>
-                            <div>
-                              <div className="font-semibold text-text-primary">{topic.name}</div>
-                              <div className="flex items-center gap-3 mt-1 text-xs text-text-secondary">
-                                <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider ${topic.difficulty === "Easy" ? "bg-green-400/10 text-green-400" : topic.difficulty === "Medium" ? "bg-yellow-400/10 text-yellow-400" : "bg-red-400/10 text-red-400"}`}>
-                                  {topic.difficulty}
-                                </span>
-                                <span>• {topic.questions} Qs</span>
-                                <span>• {topic.time}</span>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-4">
-                            {topic.status !== "Locked" && topic.status !== "Not Started" && <div className="hidden sm:flex items-center gap-2">
-                                <div className="w-16 h-1.5 bg-item-hover rounded-full overflow-hidden">
-                                  <div className="h-full bg-[#B5FF45] rounded-full" style={{ width: `${topic.progress}%` }} />
-                                </div>
-                                <span className="text-xs text-text-secondary w-8">{topic.progress}%</span>
-                              </div>}
-                            <button
-    disabled={topic.status === "Locked"}
-    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${topic.status === "Locked" ? "bg-item-hover text-text-secondary cursor-not-allowed" : topic.status === "Completed" ? "bg-item-hover hover:bg-bg-primary text-text-primary border border-border-custom" : "bg-[#B5FF45]/10 text-[#B5FF45] hover:bg-[#B5FF45]/20"}`}
-  >
-                              {topic.status === "Completed" ? "Review" : topic.status === "Locked" ? "Locked" : topic.status === "In Progress" ? "Resume" : "Start"}
-                            </button>
-                          </div>
-                        </div>)}
-                    </div>
-                  </motion.div>}
-              </AnimatePresence>
-            </motion.div>)}
+              <button className="w-full py-2.5 bg-white/5 hover:bg-[#B5FF45] hover:text-[#05080D] text-white text-xs font-semibold rounded-xl transition-all duration-300 cursor-pointer">
+                {set.completed ? "Review Answers" : "Start Practice"}
+              </button>
+            </motion.div>
+          ))}
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {
-    /* Practice Sets & AI Challenge */
-  }
-        <div className="lg:col-span-2 space-y-6">
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-              <Zap className="w-5 h-5 text-yellow-400" />
-              Practice Question Sets
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-    { name: "Percentage Practice Set 1", questions: 30, time: "45m", diff: "Easy", completed: true },
-    { name: "Profit & Loss Challenge", questions: 25, time: "40m", diff: "Medium", completed: false },
-    { name: "Logical Puzzle Set", questions: 15, time: "30m", diff: "Hard", completed: false },
-    { name: "Reading Comprehension Test", questions: 20, time: "35m", diff: "Medium", completed: false }
-  ].map((set, i) => <div key={i} className="p-5 rounded-2xl bg-white/[0.02] border border-border-custom hover:border-[#B5FF45]/50 transition-colors group">
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="p-2 bg-item-hover rounded-lg">
-                      <Target className="w-4 h-4 text-text-secondary group-hover:text-[#B5FF45] transition-colors" />
-                    </div>
-                    {set.completed && <CheckCircle2 className="w-4 h-4 text-green-400" />}
-                  </div>
-                  <h3 className="font-semibold text-text-primary mb-1">{set.name}</h3>
-                  <div className="flex items-center gap-3 text-xs text-text-secondary mb-4">
-                    <span>{set.questions} Questions</span>
-                    <span>• {set.time}</span>
-                  </div>
-                  <button className="w-full py-2 bg-item-hover hover:bg-[#B5FF45]/10 text-text-primary hover:text-[#B5FF45] rounded-xl text-sm font-semibold transition-colors">
-                    {set.completed ? "Review Answers" : "Start Practice"}
-                  </button>
-                </div>)}
-            </div>
-          </div>
+        {/* View All Library Link */}
+        <div className="flex justify-center pt-2">
+          <button
+            onClick={() => navigate("/subjects")}
+            className="text-xs font-semibold text-gray-400 hover:text-[#B5FF45] flex items-center gap-1 transition-colors group cursor-pointer"
+          >
+            <span>View All Practice Sets</span>
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          </button>
+        </div>
+      </motion.div>
 
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-              <FileBarChart className="w-5 h-5 text-purple-400" />
+      {/* 4. Mock Tests Section */}
+      <motion.div variants={itemVariants} className="space-y-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl md:text-2xl font-semibold text-white tracking-tight font-heading flex items-center gap-2">
+              <Award className="w-5 h-5 text-purple-400" />
               Mock Tests
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-    { title: "TCS NQT Mock 1", type: "Company", duration: "90m", q: 60 },
-    { title: "Quant Sectional", type: "Sectional", duration: "45m", q: 30 },
-    { title: "Full Aptitude Test", type: "Comprehensive", duration: "120m", q: 100 }
-  ].map((test, i) => <div key={i} className="p-5 rounded-2xl bg-white/[0.02] border border-border-custom hover:border-border-hover transition-colors">
-                  <div className="text-[10px] font-bold text-text-secondary uppercase tracking-wider mb-2">{test.type}</div>
-                  <h3 className="font-bold text-text-primary mb-1 leading-tight">{test.title}</h3>
-                  <div className="text-xs text-text-secondary mb-4">{test.duration} • {test.q} Questions</div>
-                  <button className="w-full py-2 border border-border-custom hover:border-[#B5FF45] text-text-primary rounded-xl text-sm font-semibold transition-colors">
-                    Start Test
-                  </button>
-                </div>)}
-            </div>
+            <p className="text-xs text-gray-400 mt-1">
+              Simulate true placement screening rounds under timing constraints.
+            </p>
           </div>
         </div>
 
-        {
-    /* Sidebar: AI, Daily, Performance, Resources */
-  }
-        <div className="space-y-6">
-          {
-    /* Daily Challenge */
-  }
-          <div className="p-6 rounded-2xl bg-gradient-to-br from-[#B5FF45]/10 to-transparent border border-[#B5FF45]/30">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                <h3 className="font-bold text-text-primary">Daily Challenge</h3>
-              </div>
-              <span className="text-xs font-mono text-text-secondary">14:22:05</span>
-            </div>
-            <p className="text-sm text-text-secondary mb-4">
-              Complete today's logical reasoning challenge to maintain your streak and earn +50 points.
-            </p>
-            <div className="flex items-center justify-between text-xs font-semibold mb-4">
-              <span className="text-text-primary">Syllogism Hard Mode</span>
-              <span className="text-[#B5FF45]">+50 XP</span>
-            </div>
-            <button className="w-full py-2.5 bg-[#B5FF45] text-[#05080D] rounded-xl font-bold hover:bg-[#a0e63b] transition-colors shadow-lg shadow-[#B5FF45]/20">
-              Start Challenge
-            </button>
-          </div>
-
-          {
-    /* AI Recommendations */
-  }
-          <div className="p-6 rounded-2xl bg-white/[0.02] border border-border-custom">
-            <div className="flex items-center gap-2 mb-4">
-              <Cpu className="w-5 h-5 text-blue-400" />
-              <h3 className="font-bold text-text-primary">AI Recommendations</h3>
-            </div>
-            <div className="space-y-4">
-              {[
-    "Revise Probability before attempting the next mock test.",
-    "Your Logical Reasoning accuracy has improved by 15% this week.",
-    "Complete Time & Work before moving to Data Interpretation."
-  ].map((rec, i) => <div key={i} className="flex gap-3 text-sm text-text-secondary">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#B5FF45] mt-1.5 shrink-0" />
-                  <p>{rec}</p>
-                </div>)}
-            </div>
-          </div>
-
-          {
-    /* Performance Overview (Compact) */
-  }
-          <div className="p-6 rounded-2xl bg-white/[0.02] border border-border-custom">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-5 h-5 text-green-400" />
-              <h3 className="font-bold text-text-primary">Performance</h3>
-            </div>
-            <div className="space-y-4">
+        {/* Exactly 3 Cards in Responsive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredMockTests.map((test, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ y: -4 }}
+              className="p-5 rounded-2xl bg-[#1E293B]/45 border border-white/[0.08] hover:border-white/15 transition-colors duration-300 flex flex-col justify-between group"
+            >
               <div>
-                <div className="flex justify-between text-sm mb-1.5">
-                  <span className="text-text-secondary">Strongest Topic</span>
-                  <span className="font-semibold text-text-primary">Percentage</span>
+                <div className="flex items-start justify-between mb-4">
+                  <span className="text-[9px] font-bold text-purple-400 uppercase tracking-widest bg-purple-500/10 px-2 py-0.5 rounded">
+                    {test.type}
+                  </span>
+                  <span
+                    className={`text-[9px] uppercase font-bold font-mono tracking-wider px-2 py-0.5 rounded-full ${
+                      test.difficulty === "Easy"
+                        ? "bg-emerald-500/10 text-emerald-400"
+                        : test.difficulty === "Medium"
+                        ? "bg-yellow-500/10 text-yellow-400"
+                        : "bg-red-500/10 text-red-400"
+                    }`}
+                  >
+                    {test.difficulty}
+                  </span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-text-secondary">Needs Work</span>
-                  <span className="font-semibold text-text-primary text-red-400">Time & Speed</span>
+
+                <h3 className="font-bold text-white mb-2 text-sm md:text-base leading-snug group-hover:text-[#B5FF45] transition-colors">
+                  {test.title}
+                </h3>
+                <div className="flex items-center gap-3 text-xs text-gray-400 font-mono mb-6">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-purple-400" /> {test.duration}
+                  </span>
+                  <span>•</span>
+                  <span>{test.questions} Questions</span>
                 </div>
               </div>
-              <div className="pt-4 border-t border-border-custom">
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-text-secondary">Overall Readiness</span>
-                  <span className="font-bold text-[#B5FF45]">68%</span>
-                </div>
-                <div className="h-2 bg-item-hover rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-blue-400 to-[#B5FF45] w-[68%]" />
-                </div>
+
+              <button
+                onClick={() => navigate("/mock-tests")}
+                className="w-full py-2.5 border border-white/5 bg-white/5 hover:bg-[#B5FF45] hover:text-[#05080D] text-white hover:border-[#B5FF45] rounded-xl text-xs font-semibold transition-all duration-300 cursor-pointer"
+              >
+                Start Test
+              </button>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* View All Mock Tests Link */}
+        <div className="flex justify-center pt-2">
+          <button
+            onClick={() => navigate("/mock-tests")}
+            className="text-xs font-semibold text-gray-400 hover:text-[#B5FF45] flex items-center gap-1 transition-colors group cursor-pointer"
+          >
+            <span>View All Mock Tests</span>
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// Dedicated Category Learning Sub-Page View
+function CategoryLearningPage({ category, onBack }) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [difficultyFilter, setDifficultyFilter] = useState("All");
+
+  const filteredTopics = category.topics.filter((topic) => {
+    const matchesSearch = topic.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDiff = difficultyFilter === "All" || topic.difficulty === difficultyFilter;
+    return matchesSearch && matchesDiff;
+  });
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -15 }}
+      transition={{ duration: 0.4 }}
+      className="space-y-8"
+    >
+      {/* Breadcrumb & Navigation */}
+      <div>
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-white transition-colors mb-4 group cursor-pointer bg-transparent border-none p-0"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+          Back to Aptitude Categories
+        </button>
+        <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
+          <span>Aptitude</span>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-[#B5FF45] font-semibold">{category.title}</span>
+        </div>
+      </div>
+
+      {/* Category Jumbotron Header */}
+      <div className="relative overflow-hidden bg-[#1E293B]/40 border border-white/[0.08] rounded-3xl p-6 md:p-8 backdrop-blur-md">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-bl from-[#B5FF45]/[0.05] to-transparent rounded-full blur-[80px] pointer-events-none" />
+        <div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center relative z-10">
+          <div className="space-y-3 flex-1">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-white/5 text-[#B5FF45]">
+                <category.icon className="w-6 h-6" />
               </div>
+              <h1 className="text-2xl md:text-3xl font-bold text-white font-heading">
+                {category.title}
+              </h1>
+            </div>
+            <p className="text-gray-300 text-sm md:text-base font-light leading-relaxed max-w-2xl">
+              {category.description}
+            </p>
+            <div className="flex items-center gap-4 text-xs font-mono text-gray-400 pt-2">
+              <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-md border border-white/5">
+                <BookOpen className="w-3.5 h-3.5 text-[#B5FF45]" />
+                {category.topicsCompleted} Topics Completed
+              </span>
+              <span className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded-md border border-white/5">
+                <Clock className="w-3.5 h-3.5 text-blue-400" />
+                {category.timeEstimation} Est. Time
+              </span>
             </div>
           </div>
 
-          {
-    /* Resources */
-  }
-          <div className="space-y-3">
-            <h3 className="font-bold text-text-primary px-1">Resources</h3>
-            {[
-    { title: "Quant Formula Sheet", icon: FileText, type: "PDF" },
-    { title: "Reasoning Short Tricks", icon: BookOpen, type: "Notes" }
-  ].map((res, i) => <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-item-hover border border-border-custom cursor-pointer hover:border-[#B5FF45]/50 transition-colors group">
-                <div className="flex items-center gap-3">
-                  <res.icon className="w-4 h-4 text-text-secondary group-hover:text-text-primary" />
-                  <span className="text-sm font-medium text-text-primary">{res.title}</span>
-                </div>
-                <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider bg-bg-primary px-2 py-0.5 rounded">{res.type}</span>
-              </div>)}
+          <div className="w-full md:w-64 space-y-3 bg-black/30 p-4 rounded-2xl border border-white/5">
+            <div className="flex justify-between items-end">
+              <span className="text-xs text-gray-400 font-medium">Category Mastery</span>
+              <span className="text-xl font-bold text-white font-mono">{category.progress}%</span>
+            </div>
+            <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-[#B5FF45] to-[#80E600] rounded-full shadow-[0_0_8px_rgba(181,255,69,0.2)]"
+                style={{ width: `${category.progress}%` }}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      {
-    /* Continue Learning & Quick Actions */
-  }
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
-        {
-    /* Continue Learning */
-  }
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-            <Clock className="w-5 h-5 text-[#B5FF45]" />
-            Continue Learning
-          </h2>
-          <div className="space-y-3">
-            {[
-    { title: "Profit & Loss", date: "Accessed 2 hours ago", progress: 40, type: "Topic" },
-    { title: "TCS NQT Mock 1", date: "Accessed yesterday", progress: 15, type: "Mock Test" },
-    { title: "Number System", date: "Recommended next topic", progress: 0, type: "Recommended" }
-  ].map((item, i) => <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-border-custom hover:border-border-hover transition-colors group">
-                <div>
-                  <h3 className="font-semibold text-text-primary group-hover:text-[#B5FF45] transition-colors">{item.title}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">{item.type}</span>
-                    <span className="text-xs text-text-secondary">• {item.date}</span>
+      {/* Filters & Topic Search */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center bg-[#1E293B]/20 border border-white/[0.04] p-4 rounded-2xl">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search topics..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 focus:border-[#B5FF45] rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none transition-all font-sans"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-400 font-mono flex items-center gap-1 shrink-0">
+            <Filter className="w-3.5 h-3.5 text-gray-400" /> Filter:
+          </span>
+          <div className="flex items-center gap-1 bg-white/5 p-1 rounded-xl border border-white/10">
+            {["All", "Easy", "Medium", "Hard"].map((diff) => (
+              <button
+                key={diff}
+                onClick={() => setDifficultyFilter(diff)}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  difficultyFilter === diff
+                    ? "bg-[#B5FF45] text-[#05080D]"
+                    : "text-gray-400 hover:text-white"
+                }`}
+              >
+                {diff}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Topics List */}
+      <div className="grid grid-cols-1 gap-4">
+        {filteredTopics.length > 0 ? (
+          filteredTopics.map((topic, i) => {
+            const isCompleted = topic.status === "Completed";
+            const isLocked = topic.status === "Locked";
+            const isInProgress = topic.status === "In Progress";
+
+            return (
+              <motion.div
+                key={topic.name}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: i * 0.03 }}
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl bg-[#1E293B]/45 border border-white/[0.08] hover:border-white/15 hover:bg-[#1E293B]/60 transition-all gap-4 group"
+              >
+                <div className="flex items-start gap-4">
+                  <div
+                    className={`p-3 rounded-xl mt-0.5 shrink-0 ${
+                      isCompleted
+                        ? "bg-[#B5FF45]/10 text-[#B5FF45]"
+                        : isInProgress
+                        ? "bg-blue-400/10 text-blue-400"
+                        : isLocked
+                        ? "bg-white/5 text-gray-500 border border-white/5"
+                        : "bg-white/5 text-white"
+                    }`}
+                  >
+                    {isCompleted ? (
+                      <CheckCircle2 className="w-5 h-5" />
+                    ) : isLocked ? (
+                      <Lock className="w-5 h-5" />
+                    ) : (
+                      <PlayCircle className="w-5 h-5" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white group-hover:text-[#B5FF45] transition-colors font-sans text-sm md:text-base">
+                      {topic.name}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-gray-400 font-mono">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider ${
+                          topic.difficulty === "Easy"
+                            ? "bg-emerald-500/15 text-emerald-400"
+                            : topic.difficulty === "Medium"
+                            ? "bg-yellow-500/15 text-yellow-400"
+                            : "bg-red-500/15 text-red-400"
+                        }`}
+                      >
+                        {topic.difficulty}
+                      </span>
+                      <span>•</span>
+                      <span>{topic.questions} Questions</span>
+                      <span>•</span>
+                      <span>Est: {topic.time}</span>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  {item.progress > 0 && <div className="hidden sm:flex items-center gap-2">
-                      <div className="w-16 h-1.5 bg-item-hover rounded-full overflow-hidden">
-                        <div className="h-full bg-[#B5FF45] rounded-full" style={{ width: `${item.progress}%` }} />
+
+                <div className="flex items-center justify-end gap-4 shrink-0 border-t sm:border-t-0 pt-4 sm:pt-0 border-white/5">
+                  {!isLocked && !isCompleted && (
+                    <div className="hidden md:flex items-center gap-2">
+                      <div className="w-20 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-full bg-[#B5FF45] rounded-full" style={{ width: `${topic.progress}%` }} />
                       </div>
-                      <span className="text-xs text-text-secondary w-8">{item.progress}%</span>
-                    </div>}
-                  <button className="p-2 rounded-lg bg-item-hover text-text-primary hover:text-[#B5FF45] hover:bg-[#B5FF45]/10 transition-colors">
-                    <PlayCircle className="w-4 h-4" />
+                      <span className="text-xs text-gray-400 font-mono w-8 text-right">
+                        {topic.progress}%
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    disabled={isLocked}
+                    className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all w-full sm:w-auto ${
+                      isLocked
+                        ? "bg-white/5 text-gray-500 cursor-not-allowed border border-white/5"
+                        : isCompleted
+                        ? "bg-white/5 hover:bg-white/10 text-white border border-white/10 cursor-pointer"
+                        : "bg-[#B5FF45] text-[#05080D] hover:bg-[#80E600] cursor-pointer shadow-md"
+                    }`}
+                  >
+                    {isCompleted ? "Review" : isLocked ? "Locked" : isInProgress ? "Resume" : "Start Study"}
                   </button>
                 </div>
-              </div>)}
+              </motion.div>
+            );
+          })
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16 text-center border border-dashed border-white/10 rounded-2xl bg-[#1E293B]/10">
+            <AlertCircle className="w-10 h-10 text-gray-500 mb-3" />
+            <p className="text-sm font-medium text-gray-300">No topics found matching your criteria.</p>
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setDifficultyFilter("All");
+              }}
+              className="text-xs font-bold text-[#B5FF45] hover:underline mt-3 cursor-pointer"
+            >
+              Reset Filters
+            </button>
           </div>
-        </div>
-
-        {
-    /* Quick Actions */
-  }
-        <div className="space-y-4">
-          <h2 className="text-xl font-bold text-text-primary flex items-center gap-2">
-            <Zap className="w-5 h-5 text-blue-400" />
-            Quick Actions
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {[
-    { label: "Practice", icon: Target },
-    { label: "Take Mock", icon: FileBarChart },
-    { label: "Progress", icon: TrendingUp },
-    { label: "AI Mentor", icon: Sparkles },
-    { label: "Downloads", icon: FileText },
-    { label: "Bookmarks", icon: Bookmark }
-  ].map((action, i) => <button
-    key={i}
-    className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl bg-white/[0.02] border border-border-custom hover:bg-item-hover hover:border-border-hover transition-all duration-300 group"
-  >
-                <action.icon className="w-5 h-5 text-text-secondary group-hover:text-[#B5FF45] transition-colors" />
-                <span className="text-xs font-semibold text-text-primary">{action.label}</span>
-              </button>)}
-          </div>
-        </div>
+        )}
       </div>
-    </div>;
+    </motion.div>
+  );
 }
