@@ -47,18 +47,22 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = "
     { id: "subjects", label: "Core Subjects", icon: BookOpen },
     { id: "aptitude", label: "Aptitude", icon: Brain },
     { id: "mock-tests", label: "Mock Tests", icon: FileEdit },
-    { id: "company-prep", label: "Company Prep", icon: Briefcase },
-    { id: "interview-prep", label: "Interview Prep", icon: MessageSquare },
+    { id: "company-prep", label: "Company Preparation", icon: Briefcase },
+    { id: "interview-prep", label: "Interview Preparation", icon: MessageSquare },
     { id: "resume-builder", label: "Resume Builder", icon: FileText },
     { id: "settings", label: "Settings", icon: Settings }
   ];
-  return <div className="min-h-screen bg-bg-primary text-text-primary flex overflow-hidden font-sans selection:bg-[#B5FF45]/30">
+  return <div className="min-h-screen bg-bg-primary text-text-primary flex overflow-hidden font-sans selection:bg-[#B5FF45]/30 dark:bg-gradient-to-b dark:from-[#111827] dark:via-[#0F172A] dark:to-[#1E293B]">
       {
-    /* Background gradients */
+    /* Background patterns and glows */
   }
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-[#B5FF45]/[0.03] rounded-full blur-[120px] dark:opacity-100 opacity-40" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-[#B5FF45]/[0.02] rounded-full blur-[100px] dark:opacity-100 opacity-30" />
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Faint dots background pattern */}
+        <div className="absolute inset-0 opacity-[0.07] dark:opacity-[0.12] bg-[radial-gradient(rgba(255,255,255,0.15)_1.2px,transparent_1.2px)] bg-[size:24px_24px]" />
+        {/* Subtle radial lime-green glow behind the welcome/top section */}
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-[#B5FF45]/[0.05] dark:bg-[#B5FF45]/[0.07] rounded-full blur-[130px]" />
+        <div className="absolute top-1/4 left-1/3 w-[800px] h-[800px] bg-[#B5FF45]/[0.01] rounded-full blur-[140px] dark:opacity-100 opacity-40" />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-[#B5FF45]/[0.01] rounded-full blur-[120px] dark:opacity-100 opacity-30" />
       </div>
 
       {
@@ -235,22 +239,6 @@ export function DashboardLayout({ onSignOut, onNavigateToProfile, initialTab = "
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <button
-    onClick={toggleTheme}
-    className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-text-secondary hover:text-text-primary hover:bg-item-hover transition-colors"
-    aria-label="Toggle theme"
-  >
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-            <button
-    onClick={() => setIsAIMentorOpen(true)}
-    className="hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-text-secondary hover:text-[#B5FF45] hover:bg-[#B5FF45]/10 transition-colors"
-  >
-              <Sparkles className="w-4 h-4" />
-            </button>
-            <button className="flex items-center justify-center w-10 h-10 rounded-full text-text-secondary hover:text-text-primary hover:bg-item-hover transition-colors">
-              <MessageSquare className="w-4 h-4" />
-            </button>
             <button className="relative flex items-center justify-center w-10 h-10 rounded-full text-text-secondary hover:text-text-primary hover:bg-item-hover transition-colors group">
               <Bell className="w-4 h-4 group-hover:text-text-primary transition-colors" />
               <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-[#B5FF45] rounded-full shadow-[0_0_5px_#B5FF45]" />
