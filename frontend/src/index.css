@@ -21,20 +21,20 @@
 }
 
 :root.dark {
-  --bg-primary: #05080D;
-  --bg-secondary: #0A0E17;
-  --bg-tertiary: #111827;
+  --bg-primary: #111827;
+  --bg-secondary: #1F2937;
+  --bg-tertiary: #0F172A;
   --text-primary: #FFFFFF;
   --text-secondary: #9CA3AF;
-  --border-color: rgba(255, 255, 255, 0.05);
-  --border-color-hover: rgba(255, 255, 255, 0.1);
-  --item-hover: rgba(255, 255, 255, 0.03);
-  --glow-color: rgba(181, 255, 69, 0.03);
-  --scroll-thumb: rgba(255, 255, 255, 0.1);
-  --scroll-thumb-hover: rgba(255, 255, 255, 0.2);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color-hover: rgba(255, 255, 255, 0.12);
+  --item-hover: rgba(255, 255, 255, 0.05);
+  --glow-color: rgba(181, 255, 69, 0.05);
+  --scroll-thumb: rgba(255, 255, 255, 0.12);
+  --scroll-thumb-hover: rgba(255, 255, 255, 0.22);
   --accent-color: #B5FF45;
-  --shadow-color: rgba(0, 0, 0, 0.5);
-  --card-border: rgba(255, 255, 255, 0.05);
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --card-border: rgba(255, 255, 255, 0.08);
 }
 
 @theme {
