@@ -3,6 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './db.js';
 import authRoutes from './routes/auth.js';
+import subjectRoutes from './routes/subjects.js';
+import questionRoutes from './routes/questions.js';
+import progressRoutes from './routes/progress.js';
 import { authenticateToken } from './middleware/auth.js';
 
 dotenv.config();
@@ -22,6 +25,9 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/subjects', subjectRoutes);
+app.use('/api/questions', questionRoutes);
+app.use('/api/progress', progressRoutes);
 
 // Health Check / Test Route
 app.get('/api/health', (req, res) => {
