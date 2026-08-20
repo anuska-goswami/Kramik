@@ -5,6 +5,8 @@ import authRoutes from './routes/auth.js';
 import subjectRoutes from './routes/subjects.js';
 import questionRoutes from './routes/questions.js';
 import progressRoutes from './routes/progress.js';
+import userRoutes from './routes/user.js';
+import dashboardRoutes from './routes/dashboard.js';
 import { getHealth } from './controllers/health.controller.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -18,7 +20,6 @@ const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow server-to-server / non-browser requests or origins matching clientUrl / localhost
     if (!origin || origin === clientUrl || origin.startsWith('http://localhost:')) {
       callback(null, true);
     } else {
@@ -35,6 +36,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/subjects', subjectRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/progress', progressRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 app.get('/api/health', getHealth);
 
 // 404 Handler

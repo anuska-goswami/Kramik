@@ -1,5 +1,21 @@
 import mongoose from 'mongoose';
 
+const attemptSchema = new mongoose.Schema({
+  question: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Question',
+    required: true
+  },
+  isCorrect: {
+    type: Boolean,
+    default: true
+  },
+  attemptedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 const userProgressSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -8,11 +24,19 @@ const userProgressSchema = new mongoose.Schema({
     unique: true,
     index: true
   },
-  // Array of ObjectIds pointing to solved questions
   solvedQuestions: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Question'
   }],
+  attemptsLog: [attemptSchema],
+  totalAttempts: {
+    type: Number,
+    default: 0
+  },
+  correctAttempts: {
+    type: Number,
+    default: 0
+  },
   lastStudied: {
     type: Date,
     default: Date.now
