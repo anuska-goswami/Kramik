@@ -50,12 +50,12 @@ export const loginUser = async ({ email, password }) => {
 
   const user = await User.findOne({ email: email.toLowerCase() });
   if (!user) {
-    throw new ApiError(400, 'Invalid email or password');
+    throw new ApiError(404, 'Invalid email: User not found');
   }
 
   const isMatch = await comparePassword(password, user.password);
   if (!isMatch) {
-    throw new ApiError(400, 'Invalid email or password');
+    throw new ApiError(401, 'Incorrect password');
   }
 
   const token = signToken({ id: user._id, email: user.email });
