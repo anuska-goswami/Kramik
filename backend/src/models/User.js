@@ -1,5 +1,36 @@
 import mongoose from 'mongoose';
 
+const userPreferencesSchema = new mongoose.Schema({
+  emailNotifications: {
+    type: Boolean,
+    default: true
+  },
+  theme: {
+    type: String,
+    enum: ['light', 'dark', 'system'],
+    default: 'dark'
+  },
+  dailyGoalMinutes: {
+    type: Number,
+    default: 30
+  },
+  preferredSubject: {
+    type: String,
+    default: 'cn'
+  }
+}, { _id: false });
+
+const profilePictureSchema = new mongoose.Schema({
+  url: {
+    type: String,
+    default: ''
+  },
+  publicId: {
+    type: String,
+    default: ''
+  }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
@@ -18,6 +49,39 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters']
+  },
+  profilePicture: {
+    type: profilePictureSchema,
+    default: () => ({ url: '', publicId: '' })
+  },
+  bio: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  phone: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  targetRole: {
+    type: String,
+    trim: true,
+    default: 'Software Engineer'
+  },
+  targetCompany: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  experienceLevel: {
+    type: String,
+    enum: ['Beginner', 'Intermediate', 'Advanced'],
+    default: 'Intermediate'
+  },
+  preferences: {
+    type: userPreferencesSchema,
+    default: () => ({})
   },
   createdAt: {
     type: Date,
