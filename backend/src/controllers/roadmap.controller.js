@@ -1,5 +1,6 @@
 import { asyncHandler } from '../utils/asyncHandler.js';
 import * as roadmapService from '../services/roadmap.service.js';
+import * as aiService from '../services/ai.service.js';
 
 export const createGoal = asyncHandler(async (req, res) => {
   const result = await roadmapService.createGoal(req.user.id, req.body);
@@ -34,4 +35,9 @@ export const toggleTask = asyncHandler(async (req, res) => {
 export const getRoadmapSummary = asyncHandler(async (req, res) => {
   const summary = await roadmapService.getRoadmapSummary(req.user.id);
   res.status(200).json(summary);
+});
+
+export const generateAiRoadmap = asyncHandler(async (req, res) => {
+  const roadmap = await aiService.generateAiPersonalizedRoadmap(req.body);
+  res.status(200).json(roadmap);
 });

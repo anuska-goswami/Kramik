@@ -12,6 +12,7 @@ import resumeRoutes from './routes/resume.js';
 import companyRoutes from './routes/company.js';
 import interviewRoutes from './routes/interview.js';
 import mockTestRoutes from './routes/mockTest.js';
+import aiRoutes from './routes/ai.js';
 import { getHealth } from './controllers/health.controller.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -48,6 +49,7 @@ app.use('/api/resume', resumeRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/interviews', interviewRoutes);
 app.use('/api/mock-tests', mockTestRoutes);
+app.use('/api/ai', aiRoutes);
 app.get('/api/health', getHealth);
 
 // 404 Handler

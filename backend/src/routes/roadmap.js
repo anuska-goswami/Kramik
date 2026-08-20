@@ -1,6 +1,6 @@
 import express from 'express';
 import * as roadmapController from '../controllers/roadmap.controller.js';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticateToken, optionalAuthenticate } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { createGoalValidation, updateGoalValidation } from '../validators/roadmap.validator.js';
 
@@ -8,6 +8,9 @@ const router = express.Router();
 
 // GET /api/roadmap/summary - Get overall roadmap progress summary & today's pending tasks
 router.get('/summary', authenticateToken, roadmapController.getRoadmapSummary);
+
+// POST /api/roadmap/ai-generate - Generate personalized AI study roadmap
+router.post('/ai-generate', optionalAuthenticate, roadmapController.generateAiRoadmap);
 
 // GET /api/roadmap/goals - Get all goals for authenticated user
 router.get('/goals', authenticateToken, roadmapController.getUserGoals);
