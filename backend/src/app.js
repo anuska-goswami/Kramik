@@ -7,6 +7,7 @@ import questionRoutes from './routes/questions.js';
 import progressRoutes from './routes/progress.js';
 import userRoutes from './routes/user.js';
 import dashboardRoutes from './routes/dashboard.js';
+import roadmapRoutes from './routes/roadmap.js';
 import { getHealth } from './controllers/health.controller.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -38,6 +39,7 @@ app.use('/api/questions', questionRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/roadmap', roadmapRoutes);
 app.get('/api/health', getHealth);
 
 // 404 Handler
