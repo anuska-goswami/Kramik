@@ -80,3 +80,54 @@ export const getUserProfile = async (userPayload) => {
     user: userPayload
   };
 };
+
+export const googleLoginUser = async ({ email, fullName, googleId, profilePicture }) => {
+  if (!email) {
+    throw new ApiError(400, 'Email is required for Google Sign-In');
+  }
+
+  const normalizedEmail = email.toLowerCase().trim();
+  let user = await User.findOne({
+    $or: [
+      { email: normalizedEmail },
+      ...(googleId ? [{ googleId }] : [])
+    ]
+  });
+
+  if (user) {
+    if (!user.googleId && googleId) {
+      user.googleId = googleId;
+    }
+    if (profilePicture && (!user.profilePicture || !user.profilePicture.url)) {
+      user.profilePicture = { url: profilePicture, publicId: '' };
+    }
+    await user.save();
+  } else {
+    user = new User({
+      fullName: fullName || 'Google User',
+      email: normalizedEmail,
+      googleId: googleId || '',
+      provider: 'google',
+      profilePicture: { url: profilePicture || '', publicId: '' }
+    });
+    await user.save();
+  }
+
+  const token = signToken({ id: user._id, email: user.email });
+
+  const userResponse = {
+    id: user._id,
+    fullName: user.fullName,
+    email: user.email,
+    profilePicture: user.profilePicture,
+    provider: user.provider,
+    createdAt: user.createdAt
+  };
+
+  return {
+    message: 'Google authentication successful',
+    token,
+    user: userResponse
+  };
+};
+

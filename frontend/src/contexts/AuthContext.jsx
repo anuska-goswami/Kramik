@@ -105,8 +105,33 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
   };
 
+  const googleLogin = async (googleData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(googleData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Google Sign-In failed');
+      }
+
+      localStorage.setItem('kramik_token', data.token);
+      localStorage.setItem('kramik_user', JSON.stringify(data.user));
+      setUser(data.user);
+      setIsAuthenticated(true);
+      return data.user;
+    } catch (error) {
+      console.error('API Google login error:', error);
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, signup, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, signup, googleLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );
