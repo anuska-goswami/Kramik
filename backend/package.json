@@ -8,7 +8,8 @@
     "dev": "nodemon src/index.js",
     "seed": "node src/seed.js",
     "seed:companies": "node src/seedCompanies.js",
-    "seed:interviews": "node src/seedInterviews.js"
+    "seed:interviews": "node src/seedInterviews.js",
+    "seed:mock-tests": "node src/seedMockTests.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
