@@ -9,6 +9,7 @@ import userRoutes from './routes/user.js';
 import dashboardRoutes from './routes/dashboard.js';
 import roadmapRoutes from './routes/roadmap.js';
 import resumeRoutes from './routes/resume.js';
+import companyRoutes from './routes/company.js';
 import { getHealth } from './controllers/health.controller.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -42,6 +43,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/roadmap', roadmapRoutes);
 app.use('/api/resume', resumeRoutes);
+app.use('/api/companies', companyRoutes);
 app.get('/api/health', getHealth);
 
 // 404 Handler
