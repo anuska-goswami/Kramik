@@ -76,7 +76,7 @@ export function AuthProvider({ children }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
+        throw new Error(data.error || data.message || 'Login failed');
       }
 
       const primaryStorage = rememberMe ? localStorage : sessionStorage;
@@ -114,7 +114,7 @@ export function AuthProvider({ children }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Signup failed');
+        throw new Error(data.error || data.message || 'Signup failed');
       }
 
       if (data.token) {
@@ -146,7 +146,6 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
   };
 
-
   const googleLogin = async (googleData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/google`, {
@@ -159,7 +158,7 @@ export function AuthProvider({ children }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Google Sign-In failed');
+        throw new Error(data.error || data.message || 'Google Sign-In failed');
       }
 
       if (data.token) {
@@ -174,6 +173,7 @@ export function AuthProvider({ children }) {
       throw error;
     }
   };
+
 
 
   return (
