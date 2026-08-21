@@ -82,25 +82,33 @@ export function AuthPage({ onBack, onSuccess }) {
         throw new Error('Google OAuth Client ID is missing. Please configure VITE_GOOGLE_CLIENT_ID in your frontend .env file.');
       }
 
-      if (!window.google?.accounts?.id) {
+      if (!window.google?.accounts?.oauth2) {
         throw new Error('Google Identity Services SDK is loading. Please try again in a moment.');
       }
 
-      // Disable cached session auto-selection to prevent automatic login
-      window.google.accounts.id.disableAutoSelect();
+      // Suppress and cancel One Tap ("Continue as...") floating prompt card
+      if (window.google.accounts.id) {
+        window.google.accounts.id.cancel();
+        window.google.accounts.id.disableAutoSelect();
+      }
 
-      // Initialize official Google Identity Services (GIS) Credential Authentication
-      window.google.accounts.id.initialize({
+      // Initialize official Google OAuth2 Token Client forcing full Google Account Chooser popup
+      const client = window.google.accounts.oauth2.initTokenClient({
         client_id: googleClientId,
-        auto_select: false,
-        use_fedcm_for_prompt: false,
-        callback: async (response) => {
-          if (response?.credential) {
+        scope: 'email profile openid',
+        prompt: 'select_account', // Forces full Google Account Chooser screen (never "Continue as...")
+        callback: async (tokenResponse) => {
+          if (tokenResponse && tokenResponse.access_token) {
             try {
-              const googleUser = parseGoogleJwt(response.credential);
-              if (!googleUser || !googleUser.email) {
-                throw new Error('Invalid authentication response from Google.');
+              const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+              });
+
+              if (!userInfoRes.ok) {
+                throw new Error('Failed to retrieve user profile from Google.');
               }
+
+              const googleUser = await userInfoRes.json();
 
               await googleLogin({
                 email: googleUser.email,
@@ -115,27 +123,29 @@ export function AuthPage({ onBack, onSuccess }) {
                 onBack();
               }
             } catch (err) {
-              setError(err.message || 'Google authentication failed.');
+              setError(err.message || 'Failed to retrieve Google user profile.');
             } finally {
               setIsLoading(false);
             }
           } else {
             setIsLoading(false);
           }
-        }
-      });
-
-      // Prompt Google's official Account Chooser screen
-      window.google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        },
+        error_callback: (err) => {
+          console.error('Google OAuth error:', err);
+          setError('Google account selection was cancelled or failed.');
           setIsLoading(false);
         }
       });
+
+      // Launch Google's official Account Chooser popup
+      client.requestAccessToken({ prompt: 'select_account' });
     } catch (err) {
       setError(err.message || 'Google Sign-In failed.');
       setIsLoading(false);
     }
   };
+
 
 
 
