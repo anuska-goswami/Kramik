@@ -12,8 +12,8 @@ export function AuthProvider({ children }) {
   // Check for token on mount
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('kramik_token');
-      const savedUser = localStorage.getItem('kramik_user');
+      const token = localStorage.getItem('kramik_token') || sessionStorage.getItem('kramik_token');
+      const savedUser = localStorage.getItem('kramik_user') || sessionStorage.getItem('kramik_user');
 
       if (savedUser) {
         try {
@@ -40,7 +40,11 @@ export function AuthProvider({ children }) {
           if (data.user) {
             setUser(data.user);
             setIsAuthenticated(true);
-            localStorage.setItem('kramik_user', JSON.stringify(data.user));
+            if (localStorage.getItem('kramik_token') || localStorage.getItem('kramik_user')) {
+              localStorage.setItem('kramik_user', JSON.stringify(data.user));
+            } else {
+              sessionStorage.setItem('kramik_user', JSON.stringify(data.user));
+            }
           }
         } else if (response.status === 401 || response.status === 403) {
           // Token expired or invalid
@@ -56,7 +60,7 @@ export function AuthProvider({ children }) {
     checkAuth();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, rememberMe = true) => {
     if (!email || !password) {
       throw new Error('Email and password are required');
     }
@@ -66,7 +70,7 @@ export function AuthProvider({ children }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password, rememberMe })
       });
 
       const data = await response.json();
@@ -75,10 +79,17 @@ export function AuthProvider({ children }) {
         throw new Error(data.error || 'Login failed');
       }
 
+      const primaryStorage = rememberMe ? localStorage : sessionStorage;
+      const secondaryStorage = rememberMe ? sessionStorage : localStorage;
+
+      secondaryStorage.removeItem('kramik_token');
+      secondaryStorage.removeItem('kramik_user');
+
       if (data.token) {
-        localStorage.setItem('kramik_token', data.token);
+        primaryStorage.setItem('kramik_token', data.token);
       }
-      localStorage.setItem('kramik_user', JSON.stringify(data.user));
+      primaryStorage.setItem('kramik_user', JSON.stringify(data.user));
+
       setUser(data.user);
       setIsAuthenticated(true);
     } catch (error) {
@@ -129,9 +140,12 @@ export function AuthProvider({ children }) {
     }
     localStorage.removeItem('kramik_token');
     localStorage.removeItem('kramik_user');
+    sessionStorage.removeItem('kramik_token');
+    sessionStorage.removeItem('kramik_user');
     setUser(null);
     setIsAuthenticated(false);
   };
+
 
   const googleLogin = async (googleData) => {
     try {

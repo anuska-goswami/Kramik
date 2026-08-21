@@ -19,10 +19,20 @@ export const signup = asyncHandler(async (req, res) => {
 export const login = asyncHandler(async (req, res) => {
   const result = await authService.loginUser(req.body);
   if (result.token) {
-    res.cookie('kramik_token', result.token, COOKIE_OPTIONS);
+    const isRemembered = req.body.rememberMe !== false;
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    };
+    if (isRemembered) {
+      cookieOptions.maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
+    }
+    res.cookie('kramik_token', result.token, cookieOptions);
   }
   res.status(200).json(result);
 });
+
 
 export const getMe = asyncHandler(async (req, res) => {
   const result = await authService.getUserProfile(req.user);

@@ -13,6 +13,7 @@ import { useAuth } from "../contexts/AuthContext";
 export function AuthPage({ onBack, onSuccess }) {
   const [mode, setMode] = useState("signin");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   
   // State for form inputs
@@ -38,7 +39,7 @@ export function AuthPage({ onBack, onSuccess }) {
 
     try {
       if (mode === "signin") {
-        await login(email, password);
+        await login(email, password, rememberMe);
       } else {
         await signup(fullName, email, password);
       }
@@ -54,6 +55,7 @@ export function AuthPage({ onBack, onSuccess }) {
       setIsLoading(false);
     }
   };
+
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -279,14 +281,20 @@ export function AuthPage({ onBack, onSuccess }) {
               <div className="flex items-center justify-between mt-1 px-1">
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <div className="relative w-4 h-4 rounded border border-white/20 bg-white/5 group-hover:border-[#B5FF45]/50 transition-colors flex items-center justify-center">
-                    <input type="checkbox" className="absolute opacity-0 w-full h-full cursor-pointer peer" />
-                    <CheckCircle className="w-3 h-3 text-[#B5FF45] opacity-0 peer-checked:opacity-100 transition-opacity" />
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="absolute opacity-0 w-full h-full cursor-pointer peer"
+                    />
+                    <CheckCircle className={`w-3 h-3 text-[#B5FF45] transition-opacity ${rememberMe ? 'opacity-100' : 'opacity-0'}`} />
                   </div>
                   <span className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">Remember me</span>
                 </label>
                 <a href="#" className="text-sm text-gray-400 hover:text-[#B5FF45] transition-colors hover:underline underline-offset-4">Forgot password?</a>
               </div>
             )}
+
 
             {mode === "signup" && (
               <label className="flex items-start gap-3 mt-1 px-1 cursor-pointer group">

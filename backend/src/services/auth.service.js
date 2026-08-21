@@ -43,7 +43,7 @@ export const registerUser = async ({ fullName, email, password }) => {
   };
 };
 
-export const loginUser = async ({ email, password }) => {
+export const loginUser = async ({ email, password, rememberMe = true }) => {
   if (!email || !password) {
     throw new ApiError(400, 'Email and password are required');
   }
@@ -58,7 +58,8 @@ export const loginUser = async ({ email, password }) => {
     throw new ApiError(401, 'Incorrect password');
   }
 
-  const token = signToken({ id: user._id, email: user.email });
+  const expiresIn = rememberMe ? '7d' : '1d';
+  const token = signToken({ id: user._id, email: user.email }, expiresIn);
 
   const userResponse = {
     id: user._id,
@@ -73,6 +74,7 @@ export const loginUser = async ({ email, password }) => {
     user: userResponse
   };
 };
+
 
 export const getUserProfile = async (userPayload) => {
   const user = await User.findById(userPayload.id).select('-password').lean();
