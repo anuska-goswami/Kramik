@@ -67,10 +67,11 @@ function AppRoutes() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const handleSignOut = () => {
-    logout();
-    navigate("/");
+  const handleSignOut = async () => {
+    await logout();
+    navigate("/login");
   };
+
   return <AnimatePresence mode="wait">
       <motion.div
     key={location.pathname}
