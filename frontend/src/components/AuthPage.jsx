@@ -56,30 +56,89 @@ export function AuthPage({ onBack, onSuccess }) {
     }
   };
 
+  const parseGoogleJwt = (token) => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      return null;
+    }
+  };
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      // Execute Google authentication against backend endpoint
-      await googleLogin({
-        email: email || "user.google@gmail.com",
-        fullName: fullName || "Google User",
-        googleId: "google_oauth_" + Date.now(),
-        profilePicture: "https://lh3.googleusercontent.com/a/default-user"
-      });
-      
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        onBack();
+      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+      if (!googleClientId || googleClientId === 'YOUR_GOOGLE_CLIENT_ID') {
+        throw new Error('Google OAuth Client ID is missing. Please configure VITE_GOOGLE_CLIENT_ID in your frontend .env file.');
       }
+
+      if (!window.google?.accounts?.id) {
+        throw new Error('Google Identity Services SDK is loading. Please try again in a moment.');
+      }
+
+      // Disable cached session auto-selection to prevent automatic login
+      window.google.accounts.id.disableAutoSelect();
+
+      // Initialize official Google Identity Services (GIS) Credential Authentication
+      window.google.accounts.id.initialize({
+        client_id: googleClientId,
+        auto_select: false,
+        use_fedcm_for_prompt: false,
+        callback: async (response) => {
+          if (response?.credential) {
+            try {
+              const googleUser = parseGoogleJwt(response.credential);
+              if (!googleUser || !googleUser.email) {
+                throw new Error('Invalid authentication response from Google.');
+              }
+
+              await googleLogin({
+                email: googleUser.email,
+                fullName: googleUser.name || googleUser.given_name || 'Google User',
+                googleId: googleUser.sub,
+                profilePicture: googleUser.picture || ''
+              });
+
+              if (onSuccess) {
+                onSuccess();
+              } else {
+                onBack();
+              }
+            } catch (err) {
+              setError(err.message || 'Google authentication failed.');
+            } finally {
+              setIsLoading(false);
+            }
+          } else {
+            setIsLoading(false);
+          }
+        }
+      });
+
+      // Prompt Google's official Account Chooser screen
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          setIsLoading(false);
+        }
+      });
     } catch (err) {
-      setError(err.message || "Google Sign-In failed.");
-    } finally {
+      setError(err.message || 'Google Sign-In failed.');
       setIsLoading(false);
     }
   };
+
+
+
 
   const handleModeChange = (newMode) => {
     setMode(newMode);
@@ -360,3 +419,5 @@ export function AuthPage({ onBack, onSuccess }) {
     </div>
   );
 }
+
+
