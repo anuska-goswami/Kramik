@@ -1,8 +1,28 @@
 import { verifyToken } from '../utils/jwt.js';
 
-export function authenticateToken(req, res, next) {
+function extractToken(req) {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.split(' ')[1];
+  }
+
+  if (req.headers.cookie) {
+    const cookies = req.headers.cookie.split(';').reduce((acc, cookie) => {
+      const parts = cookie.trim().split('=');
+      if (parts.length === 2) {
+        acc[parts[0]] = decodeURIComponent(parts[1]);
+      }
+      return acc;
+    }, {});
+    if (cookies.kramik_token) return cookies.kramik_token;
+    if (cookies.token) return cookies.token;
+  }
+
+  return null;
+}
+
+export function authenticateToken(req, res, next) {
+  const token = extractToken(req);
 
   if (!token) {
     return res.status(401).json({ error: 'Access token required' });
@@ -18,8 +38,7 @@ export function authenticateToken(req, res, next) {
 }
 
 export function optionalAuthenticate(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = extractToken(req);
 
   if (!token) {
     return next();
@@ -33,3 +52,4 @@ export function optionalAuthenticate(req, res, next) {
   }
   next();
 }
+

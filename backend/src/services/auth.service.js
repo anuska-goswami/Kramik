@@ -75,9 +75,27 @@ export const loginUser = async ({ email, password }) => {
 };
 
 export const getUserProfile = async (userPayload) => {
+  const user = await User.findById(userPayload.id).select('-password').lean();
+  if (!user) {
+    throw new ApiError(404, 'User account no longer exists');
+  }
+
+  const userResponse = {
+    id: user._id,
+    fullName: user.fullName,
+    email: user.email,
+    profilePicture: user.profilePicture,
+    provider: user.provider,
+    targetRole: user.targetRole,
+    targetCompany: user.targetCompany,
+    experienceLevel: user.experienceLevel,
+    preferences: user.preferences,
+    createdAt: user.createdAt
+  };
+
   return {
     message: 'Authorized access successful',
-    user: userPayload
+    user: userResponse
   };
 };
 

@@ -15,28 +15,42 @@ export function AuthProvider({ children }) {
       const token = localStorage.getItem('kramik_token');
       const savedUser = localStorage.getItem('kramik_user');
 
-      if (token && savedUser) {
+      if (savedUser) {
         try {
           setUser(JSON.parse(savedUser));
           setIsAuthenticated(true);
-          
-          // Verify token with backend
-          const response = await fetch(`${API_BASE_URL}/auth/me`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-
-          if (!response.ok) {
-            // Token expired or invalid
-            logout();
-          }
-        } catch (error) {
-          console.error('Auth verification failed:', error);
-          logout();
+        } catch (e) {
+          console.error('Failed to parse cached user:', e);
         }
       }
-      setIsLoading(false);
+
+      try {
+        const headers = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${API_BASE_URL}/auth/me`, {
+          headers,
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.user) {
+            setUser(data.user);
+            setIsAuthenticated(true);
+            localStorage.setItem('kramik_user', JSON.stringify(data.user));
+          }
+        } else if (response.status === 401 || response.status === 403) {
+          // Token expired or invalid
+          logout();
+        }
+      } catch (error) {
+        console.error('Auth verification failed:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     checkAuth();
@@ -51,6 +65,7 @@ export function AuthProvider({ children }) {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password })
       });
 
@@ -60,7 +75,9 @@ export function AuthProvider({ children }) {
         throw new Error(data.error || 'Login failed');
       }
 
-      localStorage.setItem('kramik_token', data.token);
+      if (data.token) {
+        localStorage.setItem('kramik_token', data.token);
+      }
       localStorage.setItem('kramik_user', JSON.stringify(data.user));
       setUser(data.user);
       setIsAuthenticated(true);
@@ -79,6 +96,7 @@ export function AuthProvider({ children }) {
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ fullName, email, password })
       });
 
@@ -88,7 +106,9 @@ export function AuthProvider({ children }) {
         throw new Error(data.error || 'Signup failed');
       }
 
-      localStorage.setItem('kramik_token', data.token);
+      if (data.token) {
+        localStorage.setItem('kramik_token', data.token);
+      }
       localStorage.setItem('kramik_user', JSON.stringify(data.user));
       setUser(data.user);
       setIsAuthenticated(true);
@@ -98,7 +118,15 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (e) {
+      // Ignore network errors on logout
+    }
     localStorage.removeItem('kramik_token');
     localStorage.removeItem('kramik_user');
     setUser(null);
@@ -110,6 +138,7 @@ export function AuthProvider({ children }) {
       const response = await fetch(`${API_BASE_URL}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(googleData)
       });
 
@@ -119,7 +148,9 @@ export function AuthProvider({ children }) {
         throw new Error(data.error || 'Google Sign-In failed');
       }
 
-      localStorage.setItem('kramik_token', data.token);
+      if (data.token) {
+        localStorage.setItem('kramik_token', data.token);
+      }
       localStorage.setItem('kramik_user', JSON.stringify(data.user));
       setUser(data.user);
       setIsAuthenticated(true);
@@ -129,6 +160,7 @@ export function AuthProvider({ children }) {
       throw error;
     }
   };
+
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, signup, googleLogin, logout }}>
