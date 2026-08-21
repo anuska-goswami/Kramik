@@ -13,19 +13,47 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AnimatePresence, motion } from "motion/react";
 function ProtectedRoute({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-navy,#0B1120)] flex items-center justify-center text-white font-sans">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-[#B5FF45] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm font-medium text-text-secondary">Verifying session...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
+
   return <>{children}</>;
 }
+
 function PublicRoute({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-navy,#0B1120)] flex items-center justify-center text-white font-sans">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-[#B5FF45] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm font-medium text-text-secondary">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
+
   return <>{children}</>;
 }
+
 function LandingPage() {
   return <div className="min-h-screen bg-[var(--color-navy)] text-white font-sans selection:bg-[#B5FF45]/30 flex flex-col">
       <Navbar />
@@ -189,7 +217,16 @@ function AppRoutes() {
   />
             </ProtectedRoute>} />
 
+          <Route path="/roadmap" element={<ProtectedRoute>
+              <DashboardLayout
+    onSignOut={handleSignOut}
+    onNavigateToProfile={() => navigate("/profile")}
+    initialTab="roadmap"
+  />
+            </ProtectedRoute>} />
+
           <Route path="*" element={<Navigate to="/" replace />} />
+
         </Routes>
       </motion.div>
     </AnimatePresence>;
