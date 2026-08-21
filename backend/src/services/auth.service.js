@@ -48,7 +48,8 @@ export const loginUser = async ({ email, password, rememberMe = true }) => {
     throw new ApiError(400, 'Email and password are required');
   }
 
-  const user = await User.findOne({ email: email.toLowerCase() });
+  const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+
   if (!user) {
     throw new ApiError(404, 'Invalid email: User not found');
   }

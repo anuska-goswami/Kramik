@@ -48,8 +48,10 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: function() { return this.provider === 'local'; },
-    minlength: [6, 'Password must be at least 6 characters']
+    minlength: [6, 'Password must be at least 6 characters'],
+    select: false
   },
+
   provider: {
     type: String,
     enum: ['local', 'google'],
